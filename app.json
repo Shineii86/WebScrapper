@@ -1,0 +1,39 @@
+{
+    "name": "WebScrapperBot",
+    "description": "A powerful and versatile Telegram bot for web scraping with support for content extraction, media downloads, browser automation, and web crawling.",
+    "repository": "https://github.com/Shineii86/WebScrapper",
+    "logo": "https://avatars.githubusercontent.com/u/62880752?v=4",
+    "keywords": [
+        "telegram bot",
+        "pyrogram",
+        "web scraper",
+        "web crawler",
+        "beautifulsoup",
+        "selenium",
+        "python"
+    ],
+    "env": {
+        "BOT_TOKEN": {
+            "description": "Your Bot token from @BotFather",
+            "required": true
+        },
+        "API_ID": {
+            "description": "Your API_ID from https://my.telegram.org/apps",
+            "required": true
+        },
+        "API_HASH": {
+            "description": "Your API_HASH from https://my.telegram.org/apps",
+            "required": true
+        },
+        "CRAWL_LOG_CHANNEL": {
+            "description": "Channel/Group ID for crawl logs (e.g., -1001234567890). Optional.",
+            "required": false
+        }
+    },
+    "buildpacks": [
+        {
+            "url": "heroku/python"
+        }
+    ],
+    "stack": "heroku-22"
+}
