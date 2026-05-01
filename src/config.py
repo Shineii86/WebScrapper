@@ -22,7 +22,7 @@ if not all([BOT_TOKEN, API_ID, API_HASH]):
 
 # Bot metadata
 BOT_NAME = "WebScrapperBot"
-BOT_VERSION = "2.0.0"
+BOT_VERSION = "2.5.0"
 BOT_OWNER = "@Shineii86"
 SUPPORT_CHAT = "https://t.me/MaximXGroup"
 REPO_URL = "https://github.com/Shineii86/WebScrapper"
