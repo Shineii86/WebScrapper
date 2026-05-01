@@ -8,14 +8,10 @@ from src.config import (
 )
 
 
-async def progress_bar(current: int, total: int) -> tuple:
-    """Generate a simple text progress bar.
-    
-    Returns:
-        tuple: (progress_string, percentage_string)
-    """
+async def progress_bar(current: int, total: int) -> tuple[str, str]:
+    """Generate a simple text progress bar."""
     if total == 0:
-        return UN_FINISHED_PROGRESS_STR * 10, "0.00"
+        return "", "0.00"
     percentage = current / total
     finished_length = int(percentage * 10)
     unfinished_length = 10 - finished_length
@@ -23,7 +19,7 @@ async def progress_bar(current: int, total: int) -> tuple:
         f"{FINISHED_PROGRESS_STR * finished_length}"
         f"{UN_FINISHED_PROGRESS_STR * unfinished_length}"
     )
-    formatted_percentage = f"{percentage * 100:.2f}"
+    formatted_percentage = "{:.2f}".format(percentage * 100)
     return progress, formatted_percentage
 
 
@@ -44,40 +40,43 @@ async def progress_for_pyrogram(current, total, ud_type, message, start):
         elapsed_time = TimeFormatter(milliseconds=elapsed_time)
         estimated_total_time = TimeFormatter(milliseconds=estimated_total_time)
 
-        filled = math.floor(percentage / 5)
-        empty = 20 - filled
-        progress = (
-            f"[{'■' * filled}{'□' * empty}]\n"
-            f"<b>📊 Percentage:</b> {round(percentage, 2)}%\n"
+        progress = "[{0}{1}] \n <b>📊 Percentage:</b> {2}%\n".format(
+            "".join(["■" for _ in range(math.floor(percentage / 5))]),
+            "".join(["□" for _ in range(20 - math.floor(percentage / 5))]),
+            round(percentage, 2),
         )
 
         tmp = (
-            f"{progress}"
-            f"<b>✅ Completed:</b> {humanbytes(current)}\n"
-            f"<b>📁 Total Size:</b> {humanbytes(total)}\n"
-            f"<b>🚀 Speed:</b> {humanbytes(speed)}/s\n"
-            f"<b>⌚️ ETA:</b> {estimated_total_time if estimated_total_time else '0 s'}\n"
+            progress
+            + "<b>✅ Completed:</b> {0} \n"
+            "<b>📁 Total Size:</b> {1}\n"
+            "<b>🚀 Speed:</b> {2}/s\n"
+            "<b>⌚️ ETA:</b> {3}\n".format(
+                humanbytes(current),
+                humanbytes(total),
+                humanbytes(speed),
+                estimated_total_time if estimated_total_time else "0 s",
+            )
         )
         try:
             await message.edit(
-                text=f"{ud_type}\n {tmp}",
-                reply_markup=reply_markup,
+                text="{}\n {}".format(ud_type, tmp), reply_markup=reply_markup
             )
         except Exception:
             pass
 
 
-def humanbytes(size: float) -> str:
+def humanbytes(size: int) -> str:
     """Convert bytes to human-readable format."""
     if not size:
-        return "0 B"
+        return ""
     power = 2 ** 10
     n = 0
-    units = {0: "B", 1: "KiB", 2: "MiB", 3: "GiB", 4: "TiB"}
+    units = {0: " ", 1: "Ki", 2: "Mi", 3: "Gi", 4: "Ti"}
     while size > power and n < 4:
         size /= power
         n += 1
-    return f"{round(size, 2)} {units[n]}"
+    return f"{round(size, 2)} {units[n]}B"
 
 
 def TimeFormatter(milliseconds: int) -> str:
@@ -86,15 +85,11 @@ def TimeFormatter(milliseconds: int) -> str:
     minutes, seconds = divmod(seconds, 60)
     hours, minutes = divmod(minutes, 60)
     days, hours = divmod(hours, 24)
-    parts = []
-    if days:
-        parts.append(f"{days}d")
-    if hours:
-        parts.append(f"{hours}h")
-    if minutes:
-        parts.append(f"{minutes}m")
-    if seconds:
-        parts.append(f"{seconds}s")
-    if milliseconds and not parts:
-        parts.append(f"{milliseconds}ms")
-    return ", ".join(parts) if parts else "0 s"
+    tmp = (
+        ((f"{days}d, ") if days else "")
+        + ((f"{hours}h, ") if hours else "")
+        + ((f"{minutes}m, ") if minutes else "")
+        + ((f"{seconds}s, ") if seconds else "")
+        + ((f"{milliseconds}ms, ") if milliseconds else "")
+    )
+    return tmp[:-2] if tmp else "0 s"

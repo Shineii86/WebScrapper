@@ -1,13 +1,12 @@
 """Bot handlers for WebScrapperBot."""
 import asyncio
 import logging
-import time
 
 from pyrogram import Client, filters
-from pyrogram.types import Message, CallbackQuery
+from pyrogram.types import Message
 from pyrogram.enums import ChatAction
 
-from src.config import BOT_TOKEN, API_ID, API_HASH, CRAWL_LOG_CHANNEL, BOT_VERSION
+from src.config import BOT_TOKEN, API_ID, API_HASH, CRAWL_LOG_CHANNEL
 from src.utils.ui import START_TEXT, START_BUTTON, HELP_TEXT, ABOUT_TEXT, SCRAPERS_TEXT, OPTIONS, BACK_BUTTON
 from src.utils.validators import is_valid_url, normalize_url, is_safe_url
 
@@ -19,9 +18,6 @@ from src.scrapers.text import (
     all_headings_scraping,
     all_tables_scraping,
     extract_metadata,
-    extract_emails,
-    extract_phone_numbers,
-    text_content_scraping,
 )
 from src.scrapers.media import (
     all_images_scraping,
@@ -34,7 +30,6 @@ from src.scrapers.browser import (
     extract_local_storage,
     capture_screenshot,
     record_screen,
-    extract_page_source,
 )
 from src.crawler import crawl_web
 
@@ -48,8 +43,6 @@ app = Client(
     api_hash=API_HASH,
 )
 
-
-# ─── Command Handlers ───────────────────────────────────────────────
 
 @app.on_message(filters.command(["start"]))
 async def start_handler(_, message: Message):
@@ -95,63 +88,12 @@ async def scrapers_handler(_, message: Message):
     )
 
 
-@app.on_message(filters.command(["ping"]))
-async def ping_handler(_, message: Message):
-    """Handle /ping command - check bot responsiveness."""
-    start = time.monotonic()
-    msg = await message.reply_text("🏓 Pong!", quote=True)
-    latency = (time.monotonic() - start) * 1000
-    await msg.edit(f"🏓 <b>Pong!</b>\n⏱ Latency: {latency:.0f}ms\n📦 v{BOT_VERSION}")
-
-
-# ─── URL Handler ─────────────────────────────────────────────────────
-
-@app.on_message(
-    (filters.regex(r"https?://") | filters.regex(r"www\."))
-    & filters.private
-)
-async def url_handler(bot, message: Message):
-    """Handle URLs sent by users."""
-    url = normalize_url(message.text.strip())
-
-    if not is_valid_url(url):
-        await message.reply_text(
-            "⚠️ <b>Invalid URL</b>\n\n"
-            "Please send a valid URL starting with <code>http://</code> or <code>https://</code>",
-            quote=True,
-        )
-        return
-
-    if not is_safe_url(url):
-        await message.reply_text(
-            "⚠️ <b>Unsafe URL detected</b>\n\n"
-            "This URL points to a private/local address and is not allowed.",
-            quote=True,
-        )
-        return
-
-    await bot.send_chat_action(message.chat.id, ChatAction.TYPING)
-    await message.reply_text(
-        "✅ <b>URL Received!</b>\n\nChoose an option to scrape:",
-        quote=True,
-    )
-    await message.reply_text(
-        url,
-        reply_markup=OPTIONS,
-        disable_web_page_preview=True,
-        quote=True,
-    )
-
-
-# ─── Callback Query Handler ──────────────────────────────────────────
-
 @app.on_callback_query()
-async def callback_handler(bot, update: CallbackQuery):
+async def callback_handler(bot, update):
     """Handle all callback queries from inline keyboards."""
     data = update.data
     message = update.message
 
-    # Navigation callbacks
     if data == "cb_back":
         await message.edit_text(
             START_TEXT,
@@ -176,14 +118,6 @@ async def callback_handler(bot, update: CallbackQuery):
         )
         return
 
-    if data == "cbscrapers":
-        await message.edit_text(
-            SCRAPERS_TEXT,
-            disable_web_page_preview=True,
-            reply_markup=BACK_BUTTON,
-        )
-        return
-
     if data == "cb_cancel":
         try:
             await message.edit_text("❌ Operation cancelled by user.")
@@ -193,22 +127,16 @@ async def callback_handler(bot, update: CallbackQuery):
 
     # All scraping operations need a URL from the message text
     if not message or not message.text:
-        await message.reply_text("❌ No URL found. Please send a URL first.", quote=True)
+        await message.reply_text("❌ No URL found. Please send a URL first.")
         return
 
     # Validate URL for scraping operations
-    url = normalize_url(message.text.strip())
+    url = normalize_url(message.text)
     if not is_valid_url(url):
-        await message.reply_text(
-            "❌ Invalid URL. Please send a valid http:// or https:// link.",
-            quote=True,
-        )
+        await message.reply_text("❌ Invalid URL. Please send a valid http:// or https:// link.")
         return
     if not is_safe_url(url):
-        await message.reply_text(
-            "❌ This URL is not allowed for safety reasons.",
-            quote=True,
-        )
+        await message.reply_text("❌ This URL is not allowed for safety reasons.")
         return
 
     # Send typing action for better UX
@@ -235,10 +163,6 @@ async def callback_handler(bot, update: CallbackQuery):
         "cbscreenshot": capture_screenshot,
         "cbscreenrecord": record_screen,
         "cbcrawl": lambda q: crawl_web(bot, q),
-        "cbemails": extract_emails,
-        "cbphones": extract_phone_numbers,
-        "cbtextcontent": text_content_scraping,
-        "cbsource": extract_page_source,
     }
 
     handler = scraper_map.get(data)
@@ -247,17 +171,51 @@ async def callback_handler(bot, update: CallbackQuery):
             await handler(update)
         except Exception as e:
             logger.error(f"Handler error for {data}: {e}", exc_info=True)
-            try:
-                await message.reply_text(
-                    f"❌ An error occurred while processing your request.\n"
-                    f"<code>{str(e)[:200]}</code>",
-                    quote=True,
-                )
-            except Exception:
-                pass
+            await message.reply_text(
+                f"❌ An error occurred while processing your request.\n"
+                f"<code>{str(e)[:200]}</code>",
+                quote=True,
+            )
     else:
         await message.edit_text(
             START_TEXT,
             disable_web_page_preview=True,
             reply_markup=START_BUTTON,
         )
+
+
+@app.on_message(
+    (filters.regex(r"https?://") | filters.regex(r"www\."))
+    & filters.private
+)
+async def url_handler(bot, message: Message):
+    """Handle URLs sent by users."""
+    url = normalize_url(message.text)
+
+    if not is_valid_url(url):
+        await message.reply_text(
+            "⚠️ <b>Invalid URL</b>\n\n"
+            "Please send a valid URL starting with <code>http://</code> or <code>https://</code>",
+            quote=True,
+        )
+        return
+
+    if not is_safe_url(url):
+        await message.reply_text(
+            "⚠️ <b>Unsafe URL detected</b>\n\n"
+            "This URL points to a private/local address and is not allowed.",
+            quote=True,
+        )
+        return
+
+    await bot.send_chat_action(message.chat.id, ChatAction.TYPING)
+    await message.reply_text(
+        "✅ <b>URL Received!</b>\n\nChoose an option to scrape:",
+        quote=True,
+    )
+    await message.reply_text(
+        message.text,
+        reply_markup=OPTIONS,
+        disable_web_page_preview=True,
+        quote=True,
+    )
