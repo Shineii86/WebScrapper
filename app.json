@@ -10,7 +10,9 @@
         "web crawler",
         "beautifulsoup",
         "selenium",
-        "python"
+        "python",
+        "async",
+        "media downloader"
     ],
     "env": {
         "BOT_TOKEN": {

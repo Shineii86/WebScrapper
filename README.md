@@ -1,412 +1,170 @@
-<p align="center">
-  <a href="https://github.com/Shineii86/WebScrapper">
-    <img src="https://capsule-render.vercel.app/api?type=waving&color=0:007EC6,100:00C6FF&height=200&section=header&text=WebScrapperBot&fontSize=50&fontColor=ffffff&animation=fadeIn&fontAlignY=40&desc=Powerful%20%7C%20Versatile%20%7C%20Easy-to-Use&descAlignY=65&descSize=18" />
-  </a>
-</p>
+# 🕷️ WebScrapperBot v2.5.0
 
-<p align="center">
-  <a href="https://github.com/Shineii86/WebScrapper/stargazers">
-    <img src="https://img.shields.io/github/stars/Shineii86/WebScrapper?style=flat-square&color=yellow" alt="Stars">
-  </a>
-  <a href="https://github.com/Shineii86/WebScrapper/network/members">
-    <img src="https://img.shields.io/github/forks/Shineii86/WebScrapper?style=flat-square&color=green" alt="Forks">
-  </a>
-  <a href="https://github.com/Shineii86/WebScrapper/issues">
-    <img src="https://img.shields.io/github/issues/Shineii86/WebScrapper?style=flat-square&color=red" alt="Issues">
-  </a>
-  <a href="https://github.com/Shineii86/WebScrapper/blob/main/LICENSE">
-    <img src="https://img.shields.io/github/license/Shineii86/WebScrapper?style=flat-square&color=blue" alt="License">
-  </a>
-  <a href="https://t.me/web_scrapper_robot">
-    <img src="https://img.shields.io/badge/Try%20Demo-Telegram-blue?style=flat-square&logo=telegram" alt="Demo">
-  </a>
-</p>
+A powerful and versatile Telegram bot for web scraping with support for content extraction, media downloads, browser automation, and web crawling.
 
----
+[![Python](https://img.shields.io/badge/Python-3.12-blue.svg)](https://python.org)
+[![Pyrogram](https://img.shields.io/badge/Pyrogram-2.x-green.svg)](https://docs.pyrogram.org)
+[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-## 🚀 Overview
+## ✨ Features
 
-**WebScrapperBot** is a simple, powerful, and versatile Telegram bot designed to simplify web scraping. Whether you need raw HTML, extracted text, media downloads, browser cookies, or full-page screenshots — this bot handles it all through an intuitive menu-driven interface.
+### 📄 Text & Content Scraping
+- **Raw Data** - Get raw HTML response from any URL
+- **HTML Data** - Prettified HTML output
+- **All Links** - Extract all anchor links with deduplication
+- **Paragraphs** - Extract text paragraphs
+- **Headings** - Extract H1-H6 heading tags
+- **Tables** - Extract and format HTML tables
+- **Clean Text** - Readable text content (strips scripts, styles, nav, footer)
+- **Emails** - Extract email addresses from page content
+- **Phone Numbers** - Extract phone numbers from page content
 
-### What's New in v2.0
+### 🌅 Media Downloading
+- **Images** - Download all images (including lazy-loaded & CSS backgrounds) as ZIP
+- **Audio** - Download audio files (including linked files) as ZIP
+- **Video** - Download video files (including linked files) as ZIP
+- **PDFs** - Download PDF documents as ZIP
 
-- ✅ **Async Architecture** — Faster, non-blocking requests with `aiohttp`
-- ✅ **Modular Codebase** — Clean separation of concerns with organized packages
-- ✅ **New Scrapers** — Headings, tables, Open Graph & Twitter Card metadata
-- ✅ **Browser Automation** — Full-page screenshots, screen recording, cookies, localStorage
-- ✅ **Safety First** — URL validation, robots.txt respect, private IP blocking
-- ✅ **Better UX** — Progress bars, typing indicators, cancel buttons, improved menus
-- ✅ **Rate Limiting** — Polite crawling with configurable delays
-- ✅ **Error Handling** — Centralized error decorator with GitHub issue reporting
+### 🌐 Browser Automation (Selenium)
+- **Cookies** - Extract browser cookies with full details
+- **LocalStorage** - Extract local storage data
+- **Metadata** - Page title, description, keywords, Open Graph, Twitter Card, canonical, favicon
+- **Screenshot** - Full-page screenshot capture
+- **Screen Record** - Scrolling video capture with frame-by-frame recording
+- **Rendered Source** - Get page source after JavaScript execution
 
----
+### 🕷️ Web Crawling
+- Rate-limited crawling with configurable depth
+- Respects robots.txt
+- Sends extracted content to a configured log channel
+- Progress tracking and status updates
 
-## 🛠️ Features
+### 🔒 Security
+- URL validation with comprehensive regex
+- Blocks private/local IPs (10.x, 192.168.x, 172.16-31.x, 127.x, link-local)
+- Blocks access to internal services (Redis, MongoDB, PostgreSQL, MySQL, etc.)
+- Blocks metadata endpoints (169.254.169.254)
+- Content-length checks before downloading
+- Concurrent request limiting with semaphore
 
-### Text & Content Extraction
-| Feature | Description |
-|---------|-------------|
-| 📄 **Full Content** | Raw HTML response from the server |
-| 📝 **HTML Data** | Prettified, formatted HTML structure |
-| 🔗 **All Links** | Every anchor (`<a>`) tag with resolved URLs |
-| 📃 **All Paragraphs** | Extracted text content from `<p>` tags |
-| 📌 **All Headings** | H1–H6 headings with hierarchy preserved |
-| 📊 **All Tables** | HTML tables formatted as readable text |
+## 🚀 Deploy
 
-### Media Downloads
-| Feature | Description |
-|---------|-------------|
-| 🌄 **All Images** | Download all images as a ZIP archive |
-| 🎵 **All Audio** | Download audio files as a ZIP archive |
-| 🎥 **All Video** | Download video files as a ZIP archive |
-| 📚 **All PDFs** | Download linked PDF documents as ZIP |
-
-### Browser & Data Extraction
-| Feature | Description |
-|---------|-------------|
-| 🍪 **Cookies** | Extract browser cookies via Selenium |
-| 📦 **LocalStorage** | Extract HTML5 localStorage data |
-| 📊 **Metadata** | Title, description, keywords, Open Graph, Twitter Cards |
-| 📷 **Screenshot** | Full-page screenshot (not just viewport) |
-| 🎬 **Screen Record** | Scrolling video capture of the entire page |
-
-### Web Crawling
-| Feature | Description |
-|---------|-------------|
-| 🕷️ **Crawl Website** | Follow same-domain links and extract paragraph content |
-
----
-
-## 📸 Screenshots
-
-<p align="center">
-  <img src="./assets/demos/updated-new-menu.png" width="400" alt="Bot Menu">
-  <img src="./assets/demos/video-scraping.png" width="400" alt="Video Scraping">
-</p>
-
----
-
-## 🚀 Quick Start
-
-### Try the Live Demo
-
-[![Telegram Bot](https://img.shields.io/badge/Open%20in-Telegram-2CA5E0?style=for-the-badge&logo=telegram)](http://t.me/web_scrapper_robot)
-
-### Run in Google Colab (Free)
-
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Shineii86/WebScrapper/blob/main/notebooks/WebScrapper.ipynb)
-
----
-
-## 🖥️ Local Installation
-
-### Prerequisites
-- Python 3.10 or higher
-- Chrome or Firefox (for browser-based features)
-- A Telegram bot token from [@BotFather](https://t.me/BotFather)
-- API_ID and API_HASH from [my.telegram.org](https://my.telegram.org/apps)
-
-### Step 1: Clone the Repository
-
-```bash
-git clone https://github.com/Shineii86/WebScrapper.git
-cd WebScrapper
-```
-
-### Step 2: Create Virtual Environment (Recommended)
-
-```bash
-python -m venv venv
-
-# Linux/macOS
-source venv/bin/activate
-
-# Windows
-venv\Scripts\activate
-```
-
-### Step 3: Install Dependencies
-
-```bash
-pip install -r requirements.txt
-```
-
-### Step 4: Configure Environment Variables
-
-Copy the example file and fill in your credentials:
-
-```bash
-cp .env.example .env
-```
-
-Edit `.env` with your credentials:
-
-```env
-BOT_TOKEN=your_bot_token_here
-API_ID=your_api_id_here
-API_HASH=your_api_hash_here
-CRAWL_LOG_CHANNEL=-1001234567890  # Optional
-```
-
-> 💡 **Tip:** To get a channel ID, forward a message from your channel to [@userinfobot](https://t.me/userinfobot).
-
-### Step 5: Run the Bot
-
-```bash
-python -m src.main
-```
-
-You should see:
-
-```
-==================================================
-WebScrapperBot v2.0.0 starting...
-==================================================
-```
-
----
-
-## 🐳 Docker Deployment
-
-### Build and Run with Docker
-
-```bash
-# Build the image
-docker build -t webscrapper-bot .
-
-# Run with env variables
-docker run -e BOT_TOKEN=xxx -e API_ID=xxx -e API_HASH=xxx webscrapper-bot
-```
-
-### Docker Compose (Recommended)
-
-Create a `docker-compose.yml`:
-
-```yaml
-version: '3.8'
-services:
-  bot:
-    build: .
-    container_name: webscrapper-bot
-    env_file: .env
-    restart: unless-stopped
-    volumes:
-      - ./logs:/app/logs
-```
-
-Run with:
-
-```bash
-docker-compose up -d
-```
-
----
-
-## 🚀 Heroku Deployment
-
-### One-Click Deploy
+### Heroku
 
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
 
-### Manual Deploy
+### Docker
 
 ```bash
-# Login to Heroku
-heroku login
-
-# Create app
-heroku create your-webscrapper-bot
-
-# Set environment variables
-heroku config:set BOT_TOKEN=xxx
-heroku config:set API_ID=xxx
-heroku config:set API_HASH=xxx
-
-# Deploy
-git push heroku main
+docker build -t webscrapper .
+docker run -d --name webscrapper \
+  -e BOT_TOKEN=your_token \
+  -e API_ID=your_api_id \
+  -e API_HASH=your_api_hash \
+  webscrapper
 ```
 
----
+### Manual Setup
+
+```bash
+# Clone the repository
+git clone https://github.com/Shineii86/WebScrapper.git
+cd WebScrapper
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Configure environment
+cp .env.example .env
+# Edit .env with your credentials
+
+# Run the bot
+python -m src.main
+```
+
+## ⚙️ Configuration
+
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `BOT_TOKEN` | ✅ | Telegram Bot Token from [@BotFather](https://t.me/BotFather) |
+| `API_ID` | ✅ | API ID from [my.telegram.org](https://my.telegram.org/apps) |
+| `API_HASH` | ✅ | API Hash from [my.telegram.org](https://my.telegram.org/apps) |
+| `CRAWL_LOG_CHANNEL` | ❌ | Channel/Group ID for crawl logs (e.g., `-1001234567890`) |
+
+## 📋 Commands
+
+| Command | Description |
+|---------|-------------|
+| `/start` | Start the bot and show main menu |
+| `/help` | Show help message |
+| `/about` | About the bot |
+| `/scrapers` | List all available scrapers |
+| `/ping` | Check bot responsiveness |
+
+## 🔧 Tech Stack
+
+- **Python 3.12** - Core language
+- **Pyrogram 2.x** - Telegram MTProto API framework
+- **BeautifulSoup4 + lxml** - HTML parsing
+- **Aiohttp** - Async HTTP client
+- **Selenium** - Browser automation
+- **ImageIO** - Video frame processing
+- **TgCrypto** - Encryption for Telegram
 
 ## 📁 Project Structure
 
 ```
 WebScrapper/
-├── .github/                    # GitHub templates & funding
-│   ├── FUNDING.yml
-│   └── ISSUE_TEMPLATE/
-│       ├── bug_report.md
-│       └── feature_request.md
-├── assets/
-│   └── demos/                  # Screenshots & demo images
-├── notebooks/
-│   └── WebScrapper.ipynb       # Google Colab notebook
 ├── src/
 │   ├── __init__.py
-│   ├── main.py                 # Application entry point
-│   ├── config.py               # Environment & settings
-│   ├── handlers.py             # Telegram bot handlers
-│   ├── crawler.py              # Web crawler logic
+│   ├── main.py              # Entry point
+│   ├── config.py             # Configuration
+│   ├── handlers.py           # Bot command & callback handlers
+│   ├── crawler.py            # Web crawler
 │   ├── scrapers/
 │   │   ├── __init__.py
-│   │   ├── base.py             # Base scraper + async fetch + error decorator
-│   │   ├── text.py             # Text content scrapers
-│   │   ├── media.py            # Media downloaders
-│   │   └── browser.py          # Selenium-based scrapers
+│   │   ├── base.py           # Base fetch/error handling
+│   │   ├── text.py           # Text content scrapers
+│   │   ├── media.py          # Media downloaders
+│   │   └── browser.py        # Selenium-based scrapers
 │   └── utils/
 │       ├── __init__.py
-│       ├── helpers.py          # Progress bars, formatters
-│       ├── ui.py               # Keyboards, buttons, messages
-│       └── validators.py       # URL validation, robots.txt
-├── tests/                      # Unit tests (future)
-├── .env.example                # Environment template
+│       ├── helpers.py         # Progress bars, formatters
+│       ├── ui.py              # UI components, keyboards
+│       └── validators.py      # URL validation & safety
+├── .env.example
 ├── .gitignore
-├── app.json                    # Heroku configuration
-├── CODE_OF_CONDUCT.md
 ├── Dockerfile
-├── LICENSE
 ├── Procfile
-├── README.md                   # This file
-├── requirements.txt            # Python dependencies
-├── runtime.txt                 # Python version
-└── SECURITY.md
+├── app.json
+├── requirements.txt
+├── runtime.txt
+├── LICENSE
+└── README.md
 ```
-
----
-
-## 📖 Usage Guide
-
-### Basic Usage
-
-1. **Start the bot** — Send `/start` to see the welcome menu.
-2. **Send a URL** — Paste any `http://` or `https://` link.
-3. **Choose an option** — Tap a button from the inline menu.
-4. **Receive results** — The bot will process and send files or text.
-
-### Available Commands
-
-| Command | Description |
-|---------|-------------|
-| `/start` | Start the bot and show main menu |
-| `/help` | Show detailed help message |
-| `/about` | About the bot and tech stack |
-| `/scrapers` | List all available scrapers |
-
-### Feature-Specific Tips
-
-**Images/Audio/Video/PDFs**
-- Files are downloaded and sent as ZIP archives
-- Large files show real-time progress bars
-- Supports cancel button during upload
-
-**Screenshots**
-- Captures the *full page* height, not just viewport
-- Requires Chrome or Firefox installed
-
-**Screen Recording**
-- Records a scrolling capture of the entire page
-- Configurable duration and FPS in `src/config.py`
-
-**Crawling**
-- Respects `robots.txt`
-- Rate-limited to avoid overloading servers
-- Sends results to `CRAWL_LOG_CHANNEL`
-- Limited to same-domain links
-
----
-
-## ⚙️ Configuration
-
-All settings are in `src/config.py`:
-
-| Setting | Default | Description |
-|---------|---------|-------------|
-| `REQUEST_TIMEOUT` | 30 | HTTP request timeout in seconds |
-| `RATE_LIMIT_DELAY` | 1.5 | Delay between crawl requests |
-| `MAX_CRAWL_DEPTH` | 2 | Maximum crawl depth |
-| `MAX_VIDEO_LENGTH` | 30 | Screen recording duration |
-| `MAX_SCREENSHOTS` | 60 | Max frames for screen recording |
-| `MAX_DOWNLOAD_SIZE_MB` | 50 | Max individual file size |
-
----
-
-## 🛡️ Safety & Ethics
-
-WebScrapperBot includes built-in safety measures:
-
-- ✅ **URL Validation** — Only accepts valid HTTP/HTTPS URLs
-- ✅ **Private IP Blocking** — Prevents access to localhost/internal networks
-- ✅ **robots.txt Respect** — Checks robots.txt before crawling
-- ✅ **Rate Limiting** — Configurable delays between requests
-- ✅ **File Size Limits** — Prevents excessive memory usage
-
-**Please use responsibly:**
-- Don't scrape personal information without consent
-- Respect website Terms of Service
-- Don't overload servers with aggressive crawling
-- Identify yourself with the User-Agent string
-
----
-
-## 🐛 Troubleshooting
-
-| Issue | Solution |
-|-------|----------|
-| `ModuleNotFoundError` | Run `pip install -r requirements.txt` |
-| Browser features fail | Install Chrome: `sudo apt install chromium-browser` |
-| Session file locked | Delete `*.session` files and restart |
-| Heroku build fails | Check `runtime.txt` matches Python version |
-| Crawl not sending files | Verify `CRAWL_LOG_CHANNEL` is set correctly |
-
----
 
 ## 🤝 Contributing
 
-Contributions are welcome! Please follow these steps:
+Contributions are welcome! Please feel free to submit a Pull Request.
 
 1. Fork the repository
-2. Create a feature branch: `git checkout -b feature/amazing-feature`
-3. Commit your changes: `git commit -m 'Add amazing feature'`
-4. Push to the branch: `git push origin feature/amazing-feature`
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
-
-Please read our [Code of Conduct](./CODE_OF_CONDUCT.md) and [Security Policy](./SECURITY.md).
-
----
 
 ## 📜 License
 
-This project is licensed under the MIT License - see the [LICENSE](./LICENSE) file for details.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
----
+## 🙏 Credits
 
-## 🙏 Acknowledgments
-
-- [Pyrogram](https://github.com/pyrogram/pyrogram) — Telegram MTProto framework
-- [BeautifulSoup](https://www.crummy.com/software/BeautifulSoup/) — HTML parsing
-- [Selenium](https://www.selenium.dev/) — Browser automation
-- [aiohttp](https://docs.aiohttp.org/) — Async HTTP client
-
----
-
-## 💬 Support
-
-- 📢 **Telegram:** [@BugHunterBots](https://t.me/BugHunterBots)
-- 🐛 **Issues:** [GitHub Issues](https://github.com/Shineii86/WebScrapper/issues)
-- ⭐ **Star this repo** if you find it useful!
-
-<p align="center">
-  <a href="https://github.com/sponsors/Shineii86">
-    <img src="https://img.shields.io/badge/Sponsor-GitHub-red?style=for-the-badge&logo=github-sponsors" alt="Sponsor">
-  </a>
-</p>
+- Built with [Pyrogram](https://docs.pyrogram.org)
+- HTML parsing by [BeautifulSoup4](https://www.crummy.com/software/BeautifulSoup/)
+- Browser automation by [Selenium](https://www.selenium.dev/)
 
 ---
 
 <p align="center">
-  <b>Made with ❤️ by <a href="https://github.com/Shineii86">Shinei Nouzen</a></b>
-</p>
-
-<p align="center">
-  <img src="https://api.star-history.com/svg?repos=Shineii86/webscrapper&type=Date" alt="Star History">
+  Made with ❤️ by <a href="https://github.com/Shineii86">Shineii86</a>
 </p>
