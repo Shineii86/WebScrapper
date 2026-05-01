@@ -16,14 +16,13 @@ def get_safe_filename(url: str) -> str:
     """Convert a URL to a safe filename."""
     parsed = urlparse(url)
     safe = unquote(parsed.netloc + parsed.path).replace("/", "_").replace(":", "_")
-    return safe[:200]  # limit length
+    return safe[:200]
 
 
-async def crawl_page(url: str, depth: int = 0) -> str:
+async def crawl_page(url: str) -> str:
     """Crawl a single page and save its paragraphs to a temp file."""
-    temp_path = None
     try:
-        _, soup = await fetch_url(url)
+        content, soup = await fetch_url(url)
         if not soup:
             logger.warning(f"Could not fetch {url}")
             return None
@@ -42,8 +41,6 @@ async def crawl_page(url: str, depth: int = 0) -> str:
         return temp_path
     except Exception as e:
         logger.error(f"Error crawling {url}: {e}")
-        if temp_path and os.path.exists(temp_path):
-            os.remove(temp_path)
         return None
 
 
@@ -66,34 +63,38 @@ async def crawl_web(bot, query):
     visited_urls = set()
     pending_urls = [base_url]
     crawled_count = 0
+    failed_count = 0
 
     try:
         # Get initial links
-        _, soup = await fetch_url(base_url)
+        content, soup = await fetch_url(base_url)
         if soup:
             for link in soup.find_all("a", href=True):
-                next_url = urljoin(base_url, link["href"])
+                href = link["href"]
+                if href.startswith(("#", "javascript:", "mailto:", "tel:")):
+                    continue
+                next_url = urljoin(base_url, href)
                 if urlparse(next_url).netloc == base_domain and next_url not in visited_urls:
                     pending_urls.append(next_url)
 
-        # Remove duplicates but preserve order
+        # Remove duplicates preserving order
         pending_urls = list(dict.fromkeys(pending_urls))
+        total_urls = len(pending_urls)
 
         for url in pending_urls:
             if url in visited_urls:
                 continue
             visited_urls.add(url)
 
-            # Skip unsafe URLs
             if not is_safe_url(url):
                 continue
 
             try:
                 await status.edit(
                     f"🕷️ Crawling...\n"
-                    f"<b>Current:</b> <code>{url[:60]}...</code>\n"
-                    f"<b>Progress:</b> {crawled_count}/{len(pending_urls)}\n"
-                    f"<b>Visited:</b> {len(visited_urls)}"
+                    f"<b>Current:</b> <code>{url[:60]}{'...' if len(url) > 60 else ''}</code>\n"
+                    f"<b>Progress:</b> {len(visited_urls)}/{total_urls}\n"
+                    f"<b>Extracted:</b> {crawled_count} | <b>Failed:</b> {failed_count}"
                 )
             except Exception:
                 pass
@@ -110,8 +111,12 @@ async def crawl_web(bot, query):
                     crawled_count += 1
                 except Exception as e:
                     logger.error(f"Failed to send document to log channel: {e}")
+                    failed_count += 1
                 finally:
-                    os.remove(file_path)
+                    if os.path.exists(file_path):
+                        os.remove(file_path)
+            else:
+                failed_count += 1
 
             # Rate limiting
             await asyncio.sleep(RATE_LIMIT_DELAY)
@@ -123,6 +128,7 @@ async def crawl_web(bot, query):
             f"✅ <b>Crawl Complete!</b>\n\n"
             f"<b>Pages visited:</b> {len(visited_urls)}\n"
             f"<b>Pages extracted:</b> {crawled_count}\n"
+            f"<b>Failed:</b> {failed_count}\n"
             f"<b>Log channel:</b> <code>{CRAWL_LOG_CHANNEL}</code>"
         )
     except Exception as e:

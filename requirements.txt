@@ -6,7 +6,6 @@ TgCrypto>=1.2.5
 
 # Web Scraping
 beautifulsoup4>=4.12.0
-requests>=2.31.0
 aiohttp>=3.9.0
 lxml>=4.9.0
 
@@ -15,7 +14,6 @@ selenium>=4.15.0
 webdriver-manager>=4.0.0
 
 # Environment
-dotenv-python>=0.0.1
 python-dotenv>=1.0.0
 
 # Media Processing
@@ -23,10 +21,6 @@ imageio>=2.33.0
 imageio-ffmpeg>=0.4.9
 Pillow>=10.0.0
 
-# Utilities
-tqdm>=4.66.0
-
 # Optional: For better HTTP performance
 aiodns>=3.1.0
 Brotli>=1.1.0
-cchardet>=2.1.7
